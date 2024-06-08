@@ -122,7 +122,7 @@ def main(spotify_client, genre, artists, days):
     logging.info(f"Found {len(new_tracks)} new tracks.")
 
     # Save new tracks to CSV
-    playlist_name = f"New {genre.title()} from {threshold_date.month:2d}-{threshold_date.day:02d} to {today.month:2d}-{today.day:02d}"
+    playlist_name = f"New {genre.title()} from {threshold_date.month:d}-{threshold_date.day:02d} to {today.month:d}-{today.day:02d}"
     playlist_csv = Path.cwd() / f"{playlist_name}.csv"
     with open(playlist_csv, "w", newline="") as f:
         dict_writer = csv.DictWriter(f, new_tracks[0].keys())
@@ -146,7 +146,7 @@ def main(spotify_client, genre, artists, days):
             name=playlist_name,
             description=f"Automated playlist created with Spotipy.",
         )
-        logging.info("Spotify playlist updated!")
+        logging.info("Spotify playlist updated: {playlist_name}")
 
 
 def get_artists(sp, search_genre):
@@ -211,6 +211,7 @@ def get_new_tracks(sp, search_artists, threshold_date):
     Returns:
         List of new tracks.
     """
+    batch_size = 50
 
     new_tracks, searched_ids = [], []
     for idx, artist in tqdm(
@@ -219,9 +220,22 @@ def get_new_tracks(sp, search_artists, threshold_date):
         logging.info(
             f"Searching artist {idx} / {len(search_artists)} - {artist['name']}"
         )
-        results = sp.artist_albums(artist["id"])
+        results = sp.artist_albums(artist["id"], limit=batch_size)
         albums = results["items"]
+        if len(albums) == 0:
+            continue
+        elif len(albums) == batch_size:
+            while True:
+                results = sp.next(results)
+                if results is None:  # No more results
+                    break
+                albums.extend(results["items"])
+                if (
+                    len(results["items"]) < batch_size
+                ):  # This was the final batch of results
+                    break
         logging.info(f"Found {len(albums)} albums")
+
         for album in albums:
             if album["album_type"] == "compilation":
                 continue
