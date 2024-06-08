@@ -122,7 +122,7 @@ def main(spotify_client, genre, artists, days):
     logging.info(f"Found {len(new_tracks)} new tracks.")
 
     # Save new tracks to CSV
-    playlist_name = f"Automated New {genre.title()}: {threshold_date.month:2d}-{threshold_date.day:02d} to {today.month:2d}-{today.day:02d}"
+    playlist_name = f"New {genre.title()} from {threshold_date.month:2d}-{threshold_date.day:02d} to {today.month:2d}-{today.day:02d}"
     playlist_csv = Path.cwd() / f"{playlist_name}.csv"
     with open(playlist_csv, "w", newline="") as f:
         dict_writer = csv.DictWriter(f, new_tracks[0].keys())
