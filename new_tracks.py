@@ -20,16 +20,16 @@ Options:
   --help                     Show this message and exit.
 """
 
-import click
 import csv
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
 from pathlib import Path
 
+import click
 import spotipy
+import yaml
 from spotipy.oauth2 import SpotifyOAuth
 from tqdm import tqdm
-import yaml
 
 
 @click.command()
@@ -120,7 +120,7 @@ class ReleaseRadar:
 
     def __init__(self, spotify_yaml, genre, days, tracks=None, artists=None):
         self.spotify_yaml = spotify_yaml
-        self.genre = genre
+        self.genre = genre.title()
         self.days = days
         self.tracks = tracks
         self.artists = artists
@@ -167,7 +167,7 @@ class ReleaseRadar:
         self.threshold_date = self.today - timedelta(days=self.days)
         logging.info(f"Threshold date: {self.threshold_date}")
 
-        self.playlist_name = f"New {self.genre.title()} from {self.threshold_date.month:d}-{self.threshold_date.day:02d} to {self.today.month:d}-{self.today.day:02d}"
+        self.playlist_name = f"New {self.genre()} from {self.threshold_date.month:d}-{self.threshold_date.day:02d} to {self.today.month:d}-{self.today.day:02d}"
 
         return self.threshold_date
 
@@ -182,7 +182,7 @@ class ReleaseRadar:
             logging.error("No genre specified!")
             return
 
-        logging.info(f"Searching for artists in the genre - {self.genre}")
+        logging.info(f"Searching for artists in the following genre: {self.genre}")
         self.artist_list = []
 
         # Fetch in batches
@@ -208,7 +208,7 @@ class ReleaseRadar:
 
         logging.info(f"Artist search comlepted. Found {len(self.artist_list)} artists.")
 
-        artists_csv = Path.cwd() / f"{self.genre.title()} Artists.csv"
+        artists_csv = Path.cwd() / f"{self.genre()} Artists.csv"
         with open(artists_csv, "w", newline="") as f:
             dict_writer = csv.DictWriter(f, self.artist_list[0].keys())
             dict_writer.writeheader()
@@ -323,7 +323,7 @@ class ReleaseRadar:
             Path to the updated CSV file.
         """
         # Delete old playlists
-        old_playlists = Path.cwd().glob(f"New {self.genre.title()} from*")
+        old_playlists = Path.cwd().glob(f"New {self.genre()} from*")
         for old_playlist in old_playlists:
             old_playlist.unlink()
             logging.info(f"Deleted old playlist: {old_playlist.resolve()}")
