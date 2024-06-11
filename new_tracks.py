@@ -2,21 +2,23 @@
 Usage: new_tracks.py [OPTIONS]
 
   Find tracks from artists in a specified genre released within the last n
-  days. Alternatively, a CSV file containing a list tracks or artists can be
-  provided. Track/Artist ID must be included.
+  days. A CSV file containing a list tracks or artists can be provided to
+  bypass the respective search. Any number of columns can be included in the
+  CSV file, but it must contain an "id" column with the respective Spotify
+  IDs.
 
 Options:
   -s, --spotify_client FILE  YAML file with Spotify API client ID, secret, and
                              redirect URI.  [required]
   -g, --genre TEXT           Search for artists in this genre. Search is only
-                             performed if artists CSV file is not
+                             performed if tracks/artists CSV file is not
                              provided/found. Otherwise, it is only used in
                              naming the playlist.  [required]
   -d, --days INTEGER         Number of days to search back for new tracks. If
                              0, search for tracks released after the previous
                              Friday.  [default: 0]
-  -t, --tracks FILE          CSV file with track names and IDs.
-  -a, --artists FILE         CSV file with artist names and IDs.
+  -t, --tracks FILE          CSV file containing track IDs.
+  -a, --artists FILE         CSV file containing artist IDs.
   --help                     Show this message and exit.
 """
 
@@ -48,7 +50,7 @@ from tqdm import tqdm
     "-g",
     default=None,
     required=True,
-    help="Search for artists in this genre. Search is only performed if artists CSV file is not provided/found. Otherwise, it is only used in naming the playlist.",
+    help="Search for artists in this genre. Search is only performed if tracks/artists CSV file is not provided/found. Otherwise, it is only used in naming the playlist.",
 )
 @click.option(
     "--days",
@@ -60,7 +62,7 @@ from tqdm import tqdm
 @click.option(
     "--tracks",
     "-t",
-    help="CSV file with track names and IDs.",
+    help="CSV file containing track IDs.",
     type=click.Path(
         exists=True, file_okay=True, dir_okay=False, resolve_path=True, path_type=Path
     ),
@@ -68,7 +70,7 @@ from tqdm import tqdm
 @click.option(
     "--artists",
     "-a",
-    help="CSV file with artist names and IDs.",
+    help="CSV file containing artist IDs.",
     type=click.Path(
         exists=True, file_okay=True, dir_okay=False, resolve_path=True, path_type=Path
     ),
@@ -76,7 +78,8 @@ from tqdm import tqdm
 def main(spotify_client, genre, days, tracks, artists):
     """
     Find tracks from artists in a specified genre released within the last n days.
-    Alternatively, a CSV file containing a list tracks or artists can be provided. Track/Artist ID must be included.
+    A CSV file containing a list tracks or artists can be provided to bypass the respective search.
+    Any number of columns can be included in the CSV file, but it must contain an "id" column with the respective Spotify IDs.
     """
     # Set up logging
     script_name = Path(__file__).stem
@@ -115,7 +118,7 @@ def main(spotify_client, genre, days, tracks, artists):
 
 class ReleaseRadar:
     """
-    A playlist genarator for new tracks from artists in a specified genre or a list of artists.
+    A playlist generator for new tracks from artists in a specified genre or from a list of tracks/artists.
     """
 
     def __init__(self, spotify_yaml, genre, days, tracks=None, artists=None):
@@ -219,8 +222,7 @@ class ReleaseRadar:
 
     def get_new_tracks(self):
         """
-        Get new tracks from the specified artists.
-
+        Get new tracks from artists in a specified genre or from a list of specified artists.
 
         Returns:
             List of new tracks.
