@@ -186,6 +186,7 @@ def get_artists(sp, search_genre):
         for artist_item in artists_batch:
             artist_dict = {
                 "name": artist_item["name"],
+                "url": artist_item["external_urls"]["spotify"],
                 "id": artist_item["id"],
             }
             artists_list.append(artist_dict)
