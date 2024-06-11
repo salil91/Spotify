@@ -308,12 +308,12 @@ class ReleaseRadar:
                             new_tracks.append(song_dict)
                         logging.info(f"Added {len(tracks)} tracks to list.")
 
-        self.new_tracks = sorted(new_tracks, key=lambda x: x["release_date"])
+        new_tracks = sorted(new_tracks, key=lambda x: x["release_date"])
 
         logging.info(f"Search completed. Found {len(new_tracks)} new tracks.")
         print(f"Found {len(new_tracks)} new tracks.")
 
-        return self.new_tracks
+        return new_tracks
 
     def update_csv(self):
         """
@@ -331,9 +331,9 @@ class ReleaseRadar:
         # Save new tracks to CSV
         self.playlist_csv = Path.cwd() / f"{self.playlist_name}.csv"
         with open(self.playlist_csv, "w", newline="") as f:
-            dict_writer = csv.DictWriter(f, self.new_tracks[0].keys())
+            dict_writer = csv.DictWriter(f, self.track_list[0].keys())
             dict_writer.writeheader()
-            dict_writer.writerows(self.new_tracks)
+            dict_writer.writerows(self.track_list)
 
         logging.info(f"Track list saved to {self.playlist_csv.resolve()}")
 
@@ -351,11 +351,11 @@ class ReleaseRadar:
             logging.error("No playlist ID provided!")
             return
 
-        if len(self.new_tracks) == 0:
+        if len(self.track_list) == 0:
             logging.info("No new tracks found. Playlist not updated.")
         else:
             playlist_id = self.params["playlist_id"]
-            track_ids = [track["id"] for track in self.new_tracks]
+            track_ids = [track["id"] for track in self.track_list]
             self.sp.playlist_replace_items(playlist_id, track_ids)
             self.sp.playlist_change_details(
                 playlist_id,
