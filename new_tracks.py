@@ -121,8 +121,6 @@ def main(spotify_client, genre, artists, days):
 
     print(f"Searching for new '{genre}' tracks within the last {days} days...")
     new_tracks = get_new_tracks(sp, artists, threshold_date)
-    track_ids = [track["id"] for track in new_tracks]
-    # track_ids = list(set(track_ids))  # Remove duplicates
     logging.info(f"Found {len(new_tracks)} new tracks.")
     print(f"Found {len(new_tracks)} new tracks.")
 
@@ -151,6 +149,7 @@ def main(spotify_client, genre, artists, days):
         logging.info("No new tracks found. Playlist not updated.")
     else:
         playlist_id = params["playlist_id"]
+        track_ids = [track["id"] for track in new_tracks]
         sp.playlist_replace_items(playlist_id, track_ids)
         sp.playlist_change_details(
             playlist_id,
@@ -229,7 +228,7 @@ def get_new_tracks(sp, search_artists, threshold_date):
     """
     batch_size = 50
 
-    new_tracks, searched_ids = [], []
+    new_tracks, searched_ids, added_ids = [], [], []
     for idx, artist in tqdm(
         enumerate(search_artists, start=1), total=len(search_artists)
     ):
@@ -275,6 +274,9 @@ def get_new_tracks(sp, search_artists, threshold_date):
                     album_details = sp.album(album_id)
                     tracks = album_details["tracks"]["items"]
                     for track in tracks:
+                        track_id = track["id"]
+                        if track_id not in added_ids:
+                            added_ids.append(track_id)
                         song_dict = {
                             "song": track["name"],
                             "artist": track["artists"][0]["name"],
@@ -282,7 +284,7 @@ def get_new_tracks(sp, search_artists, threshold_date):
                             "album_type": album["album_type"],
                             "release_date": release_date,
                             "url": track["external_urls"]["spotify"],
-                            "id": track["id"],
+                            "id": track_id,
                         }
                         new_tracks.append(song_dict)
                     logging.info(f"Added {len(tracks)} tracks to list.")
