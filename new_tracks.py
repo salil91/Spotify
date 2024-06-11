@@ -204,7 +204,7 @@ def get_artists(sp, search_genre):
 
     logging.info(f"Artist search comlepted. Found {len(artists_list)} artists.")
 
-    artists_csv = Path.cwd() / f"{search_genre}_artists.csv"
+    artists_csv = Path.cwd() / f"{search_genre.title()} Artists.csv"
     with open(artists_csv, "w", newline="") as f:
         dict_writer = csv.DictWriter(f, artists_list[0].keys())
         dict_writer.writeheader()
