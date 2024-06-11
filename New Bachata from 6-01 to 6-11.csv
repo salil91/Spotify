@@ -1,20 +1,20 @@
-song,artist,album,album_type,release_date,id
-Mi Amor (Bachata),DJ Khalid,Mi Amor (Bachata),single,2024-06-06,0CHN2uqOBJ39wZEUXNar6z
-Latin Lover,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,4zFttPV7sLjjBfYWsXBwKA
-Quiero Olvidarte,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,28dZJZL9zjH8pH8lwUtk5E
-Me Enamoré de Ti,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,4jyFB4Gad2veR6nrqtQiM8
-Todavia Te Amo,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,1jC5MVnJkIr3Kx1iwKjMDB
-Jugó Con los Dos,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,4lYFYb2wqxDy1RmFspEDtf
-Estas en un Error,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,10b6JvVc5RzgedpeLXOuEu
-Yo No Guardo Luto,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,2IUbNBOSoeRQ87oblnC8NO
-Rubi,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,09T4WwL1r3npqEBPEM7Qf2
-Este Amor,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,7HvPkUjSQuDcuQPFq0Ac5z
-El Income Tax,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,0Y6dcOCauK6eK9lnnPoa6U
-Loco De Remate,Kiko Rodriguez,Loco De Remate,single,2024-06-07,2l36HfaR7ePFjDpSsAbklK
-Ajedrez,Mario Baro,Ajedrez,single,2024-06-07,6MeDO0DYKpWF6YRIxUnyDV
-Lo Mejor de Tu Vida - Sessions,Chavi Leons,Lo Mejor de Tu Vida (Sessions),single,2024-06-07,4BZOpqrI4da2fQlHBNsmtg
-Tu y Yo,Andy Santiago El Relevo,Tu y Yo,single,2024-06-03,2ChqlQbwhL3LBocF4wZJvM
-Porque Me Haces Llorar,Andy Santiago El Relevo,Porque Me Haces Llorar,single,2024-06-03,3OBN5MDa1RADy8lTgIaiAO
-12 Rosas - Bachata Urbana,Senor Bachata,12 Rosas (Bachata Urbana),single,2024-06-07,4VNlMzhJIvsyFDE24nnQ2c
-Muito Lindo,Cecy Leos,Muito Lindo,single,2024-06-06,1ChmCEsokC0zw65MrTit5g
-Se Fue Lo Bonito,Álvaro Ríos,Se Fue Lo Bonito,single,2024-06-01,5t00FxRgQAMAYrSYxTFYoj
+song,artist,album,album_type,release_date,url,id
+Mi Amor (Bachata),DJ Khalid,Mi Amor (Bachata),single,2024-06-06,https://open.spotify.com/track/0CHN2uqOBJ39wZEUXNar6z,0CHN2uqOBJ39wZEUXNar6z
+Latin Lover,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/4zFttPV7sLjjBfYWsXBwKA,4zFttPV7sLjjBfYWsXBwKA
+Quiero Olvidarte,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/28dZJZL9zjH8pH8lwUtk5E,28dZJZL9zjH8pH8lwUtk5E
+Me Enamoré de Ti,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/4jyFB4Gad2veR6nrqtQiM8,4jyFB4Gad2veR6nrqtQiM8
+Todavia Te Amo,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/1jC5MVnJkIr3Kx1iwKjMDB,1jC5MVnJkIr3Kx1iwKjMDB
+Jugó Con los Dos,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/4lYFYb2wqxDy1RmFspEDtf,4lYFYb2wqxDy1RmFspEDtf
+Estas en un Error,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/10b6JvVc5RzgedpeLXOuEu,10b6JvVc5RzgedpeLXOuEu
+Yo No Guardo Luto,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/2IUbNBOSoeRQ87oblnC8NO,2IUbNBOSoeRQ87oblnC8NO
+Rubi,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/09T4WwL1r3npqEBPEM7Qf2,09T4WwL1r3npqEBPEM7Qf2
+Este Amor,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/7HvPkUjSQuDcuQPFq0Ac5z,7HvPkUjSQuDcuQPFq0Ac5z
+El Income Tax,MIGUEL EL ARTISTA,Evolution,album,2024-06-09,https://open.spotify.com/track/0Y6dcOCauK6eK9lnnPoa6U,0Y6dcOCauK6eK9lnnPoa6U
+Loco De Remate,Kiko Rodriguez,Loco De Remate,single,2024-06-07,https://open.spotify.com/track/2l36HfaR7ePFjDpSsAbklK,2l36HfaR7ePFjDpSsAbklK
+Ajedrez,Mario Baro,Ajedrez,single,2024-06-07,https://open.spotify.com/track/6MeDO0DYKpWF6YRIxUnyDV,6MeDO0DYKpWF6YRIxUnyDV
+Lo Mejor de Tu Vida - Sessions,Chavi Leons,Lo Mejor de Tu Vida (Sessions),single,2024-06-07,https://open.spotify.com/track/4BZOpqrI4da2fQlHBNsmtg,4BZOpqrI4da2fQlHBNsmtg
+Tu y Yo,Andy Santiago El Relevo,Tu y Yo,single,2024-06-03,https://open.spotify.com/track/2ChqlQbwhL3LBocF4wZJvM,2ChqlQbwhL3LBocF4wZJvM
+Porque Me Haces Llorar,Andy Santiago El Relevo,Porque Me Haces Llorar,single,2024-06-03,https://open.spotify.com/track/3OBN5MDa1RADy8lTgIaiAO,3OBN5MDa1RADy8lTgIaiAO
+12 Rosas - Bachata Urbana,Senor Bachata,12 Rosas (Bachata Urbana),single,2024-06-07,https://open.spotify.com/track/4VNlMzhJIvsyFDE24nnQ2c,4VNlMzhJIvsyFDE24nnQ2c
+Muito Lindo,Cecy Leos,Muito Lindo,single,2024-06-06,https://open.spotify.com/track/1ChmCEsokC0zw65MrTit5g,1ChmCEsokC0zw65MrTit5g
+Se Fue Lo Bonito,Álvaro Ríos,Se Fue Lo Bonito,single,2024-06-01,https://open.spotify.com/track/5t00FxRgQAMAYrSYxTFYoj,5t00FxRgQAMAYrSYxTFYoj

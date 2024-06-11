@@ -272,13 +272,16 @@ def get_new_tracks(sp, search_artists, threshold_date):
                             "artist": track["artists"][0]["name"],
                             "album": album["name"],
                             "album_type": album["album_type"],
-                            "release_date": str(release_date),
+                            "release_date": release_date,
+                            "url": track["external_urls"]["spotify"],
                             "id": track["id"],
                         }
                         new_tracks.append(song_dict)
                     logging.info(f"Added {len(tracks)} tracks to list.")
 
     logging.info(f"Search completed.")
+
+    new_tracks = sorted(new_tracks, key=lambda x: x["release_date"])
 
     return new_tracks
 
