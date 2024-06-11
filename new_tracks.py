@@ -118,10 +118,13 @@ def main(spotify_client, genre, artists, days):
         days = ((today.weekday() - 4) % 7) + 7  # Days since second to last Friday
     threshold_date = today - timedelta(days=days)
     logging.info(f"Threshold date: {threshold_date}")
+
+    print(f"Searchnig for new '{genre}' tracks within the last {days} days...")
     new_tracks = get_new_tracks(sp, artists, threshold_date)
     track_ids = [track["id"] for track in new_tracks]
     track_ids = list(set(track_ids))  # Remove duplicates
     logging.info(f"Found {len(new_tracks)} new tracks.")
+    print(f"Found {len(new_tracks)} new tracks.")
 
     # Delete old playlists
     old_playlists = Path.cwd().glob(f"New {genre.title()} from*")
@@ -155,6 +158,10 @@ def main(spotify_client, genre, artists, days):
             description=f"Automated playlist created with Spotipy.",
         )
         logging.info(f"Spotify playlist updated: {playlist_name}")
+
+    playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
+    logging.info(f"Playlist URL: {playlist_url}")
+    print(f"Playlist: {playlist_url}")
 
 
 def get_artists(sp, search_genre):
