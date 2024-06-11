@@ -119,10 +119,10 @@ def main(spotify_client, genre, artists, days):
     threshold_date = today - timedelta(days=days)
     logging.info(f"Threshold date: {threshold_date}")
 
-    print(f"Searchnig for new '{genre}' tracks within the last {days} days...")
+    print(f"Searching for new '{genre}' tracks within the last {days} days...")
     new_tracks = get_new_tracks(sp, artists, threshold_date)
     track_ids = [track["id"] for track in new_tracks]
-    track_ids = list(set(track_ids))  # Remove duplicates
+    # track_ids = list(set(track_ids))  # Remove duplicates
     logging.info(f"Found {len(new_tracks)} new tracks.")
     print(f"Found {len(new_tracks)} new tracks.")
 
