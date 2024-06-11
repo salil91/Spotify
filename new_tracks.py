@@ -154,7 +154,7 @@ def main(spotify_client, genre, artists, days):
             name=playlist_name,
             description=f"Automated playlist created with Spotipy.",
         )
-        logging.info("Spotify playlist updated: {playlist_name}")
+        logging.info(f"Spotify playlist updated: {playlist_name}")
 
 
 def get_artists(sp, search_genre):
