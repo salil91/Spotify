@@ -213,7 +213,7 @@ class ReleaseRadar:
 
         # Save artists to CSV
         self.artist_list = sorted(self.artist_list, key=lambda x: x["name"])
-        artists_csv = Path.cwd() / f"{self.genre} Artists.csv"
+        artists_csv = Path.cwd() / f"{self.genre} Artists (Auto).csv"
         with open(artists_csv, "w", newline="") as f:
             dict_writer = csv.DictWriter(f, self.artist_list[0].keys())
             dict_writer.writeheader()
