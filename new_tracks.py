@@ -211,6 +211,8 @@ class ReleaseRadar:
 
         logging.info(f"Artist search comlepted. Found {len(self.artist_list)} artists.")
 
+        # Save artists to CSV
+        self.artist_list = sorted(self.artist_list, key=lambda x: x["name"])
         artists_csv = Path.cwd() / f"{self.genre} Artists.csv"
         with open(artists_csv, "w", newline="") as f:
             dict_writer = csv.DictWriter(f, self.artist_list[0].keys())
