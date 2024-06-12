@@ -212,9 +212,9 @@ class ReleaseRadar:
         logging.info(f"Artist search comlepted. Found {len(self.artist_list)} artists.")
 
         # Save artists to CSV
-        self.artist_list = sorted(self.artist_list, key=lambda x: x["name"])
+        self.artist_list = sorted(self.artist_list, key=lambda x: x["name"].lower())
         artists_csv = Path.cwd() / f"{self.genre} Artists (Auto).csv"
-        with open(artists_csv, "w", newline="") as f:
+        with open(artists_csv, "w", newline="", encoding="latin-1") as f:
             dict_writer = csv.DictWriter(f, self.artist_list[0].keys())
             dict_writer.writeheader()
             dict_writer.writerows(self.artist_list)
@@ -238,7 +238,7 @@ class ReleaseRadar:
         if self.artists:  # Load artists from CSV
             try:
                 logging.info(f"Reading list of artists from {self.artists.resolve()}")
-                with open(self.artists, "r") as f:
+                with open(self.artists, "r", encoding="latin-1") as f:
                     self.artist_list = [
                         {k: v for k, v in row.items()}
                         for row in csv.DictReader(f, skipinitialspace=True)
@@ -336,7 +336,7 @@ class ReleaseRadar:
 
         # Save new tracks to CSV
         self.playlist_csv = Path.cwd() / f"{self.playlist_name}.csv"
-        with open(self.playlist_csv, "w", newline="") as f:
+        with open(self.playlist_csv, "w", newline="", encoding="latin-1") as f:
             dict_writer = csv.DictWriter(f, self.track_list[0].keys())
             dict_writer.writeheader()
             dict_writer.writerows(self.track_list)
