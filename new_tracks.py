@@ -121,7 +121,7 @@ class ReleaseRadar:
     A playlist generator for new tracks from artists in a specified genre or from a list of tracks/artists.
     """
 
-    def __init__(self, spotify_yaml, genre, days, tracks=None, artists=None):
+    def __init__(self, spotify_yaml, genre, days=0, tracks=None, artists=None):
         self.spotify_yaml = spotify_yaml
         self.genre = genre.title()
         self.days = days
@@ -170,7 +170,7 @@ class ReleaseRadar:
         self.threshold_date = self.today - timedelta(days=self.days)
         logging.info(f"Threshold date: {self.threshold_date}")
 
-        self.playlist_name = f"New {self.genre()} from {self.threshold_date.month:d}-{self.threshold_date.day:02d} to {self.today.month:d}-{self.today.day:02d}"
+        self.playlist_name = f"New {self.genre} from {self.threshold_date.month:d}-{self.threshold_date.day:02d} to {self.today.month:d}-{self.today.day:02d}"
 
         return self.threshold_date
 
@@ -211,7 +211,7 @@ class ReleaseRadar:
 
         logging.info(f"Artist search comlepted. Found {len(self.artist_list)} artists.")
 
-        artists_csv = Path.cwd() / f"{self.genre()} Artists.csv"
+        artists_csv = Path.cwd() / f"{self.genre} Artists.csv"
         with open(artists_csv, "w", newline="") as f:
             dict_writer = csv.DictWriter(f, self.artist_list[0].keys())
             dict_writer.writeheader()
@@ -233,17 +233,19 @@ class ReleaseRadar:
         )
 
         # Load artists
-        if self.artists:
+        if self.artists:  # Load artists from CSV
             try:
                 logging.info(f"Reading list of artists from {self.artists.resolve()}")
                 with open(self.artists, "r") as f:
-                    reader = csv.reader(f)
-                    self.artist_list = list(reader)
-                logging.info(f"Done. {len(self.artists)} in list.")
-            except FileNotFoundError:
+                    self.artist_list = [
+                        {k: v for k, v in row.items()}
+                        for row in csv.DictReader(f, skipinitialspace=True)
+                    ]
+                logging.info(f"Done. {len(self.artist_list)} in list.")
+            except FileNotFoundError:  # Search for artists
                 logging.error("Error reading artists file!")
                 self.artist_list = self.get_artists()
-        else:
+        else:  # Search for artists
             self.artist_list = self.get_artists()
 
         batch_size = 50
@@ -325,7 +327,7 @@ class ReleaseRadar:
             Path to the updated CSV file.
         """
         # Delete old playlists
-        old_playlists = Path.cwd().glob(f"New {self.genre()} from*")
+        old_playlists = Path.cwd().glob(f"New {self.genre} from*")
         for old_playlist in old_playlists:
             old_playlist.unlink()
             logging.info(f"Deleted old playlist: {old_playlist.resolve()}")

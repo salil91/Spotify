@@ -11,14 +11,15 @@ set SPOTIFY_YAML=spotify.yaml
 
 rem Define the genre and the number of days
 set GENRE=bachata
-set DAYS=10
+set DAYS=11
+set ARTISTS_LIST="Bachata Artists (Manual).csv"
 
 rem Activate the conda environment
 if %ENVNAME%==base (set ENVPATH=%MAMBAPATH%) else (set ENVPATH=%MAMBAPATH%\envs\%ENVNAME%)
 call %MAMBAPATH%\Scripts\activate.bat %ENVPATH%
 
 rem Run the python script 
-python new_tracks.py -s %SPOTIFY_YAML% -g %GENRE% -d %DAYS%
+python new_tracks.py -s %SPOTIFY_YAML% -g %GENRE% -d %DAYS% -a %ARTISTS_LIST%
 pause
 
 rem Deactivate the environment
