@@ -201,7 +201,7 @@ class ReleaseRadar:
             artists_batch = results["artists"]["items"]
             for artist_item in artists_batch:
                 artist_dict = {
-                    "name": artist_item["name"],
+                    "name": artist_item["name"].replace('"', ""),
                     "url": artist_item["external_urls"]["spotify"],
                     "id": artist_item["id"],
                 }
@@ -306,9 +306,9 @@ class ReleaseRadar:
                             if track_id not in added_ids:
                                 added_ids.append(track_id)
                             song_dict = {
-                                "song": track["name"],
-                                "artist": track["artists"][0]["name"],
-                                "album": album["name"],
+                                "song": track["name"].replace('"', ""),
+                                "artist": track["artists"][0]["name"].replace('"', ""),
+                                "album": album["name"].replace('"', ""),
                                 "album_type": album["album_type"],
                                 "release_date": release_date,
                                 "url": track["external_urls"]["spotify"],
