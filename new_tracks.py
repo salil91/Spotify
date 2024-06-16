@@ -112,8 +112,11 @@ def main(spotify_client, genre, days, tracks, artists):
         rr.track_list = rr.get_new_tracks()
 
     # Update CSV and playlist
-    rr.update_csv()
-    rr.update_playlist()
+    if len(rr.track_list) == 0:
+        logging.info("No new tracks found. Playlist not updated.")
+    else:
+        rr.update_csv()
+        rr.update_playlist()
 
 
 class ReleaseRadar:
@@ -240,7 +243,7 @@ class ReleaseRadar:
                 logging.info(f"Reading list of artists from {self.artists.resolve()}")
                 with open(self.artists, "r", encoding="latin-1") as f:
                     self.artist_list = [
-                        {k: v for k, v in row.items()}
+                        {k.strip(): v.strip() for k, v in row.items()}
                         for row in csv.DictReader(f, skipinitialspace=True)
                     ]
                 logging.info(f"Done. {len(self.artist_list)} in list.")
@@ -357,18 +360,15 @@ class ReleaseRadar:
             logging.error("No playlist ID provided!")
             return
 
-        if len(self.track_list) == 0:
-            logging.info("No new tracks found. Playlist not updated.")
-        else:
-            playlist_id = self.params["playlist_id"]
-            track_ids = [track["id"] for track in self.track_list]
-            self.sp.playlist_replace_items(playlist_id, track_ids)
-            self.sp.playlist_change_details(
-                playlist_id,
-                name=self.playlist_name,
-                description=f"Automated playlist created with Spotipy.",
-            )
-            logging.info(f"Spotify playlist updated: {self.playlist_name}")
+        playlist_id = self.params["playlist_id"]
+        track_ids = [track["id"] for track in self.track_list]
+        self.sp.playlist_replace_items(playlist_id, track_ids)
+        self.sp.playlist_change_details(
+            playlist_id,
+            name=self.playlist_name,
+            description=f"Automated playlist created with Spotipy.",
+        )
+        logging.info(f"Spotify playlist updated: {self.playlist_name}")
 
         self.playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
         logging.info(f"Playlist URL: {self.playlist_url}")
