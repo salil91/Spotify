@@ -302,6 +302,7 @@ class ReleaseRadar:
                         album_details = self.sp.album(album_id)
                         tracks = album_details["tracks"]["items"]
                         for track in tracks:
+                            # TODO: Check if track is bachata
                             track_id = track["id"]
                             if track_id not in added_ids:
                                 added_ids.append(track_id)
