@@ -279,6 +279,10 @@ class ReleaseRadar:
 
             for album in albums:
                 if album["album_type"] == "compilation":
+                    logging.info(f"Skipping compilation album - {album['name']}")
+                    continue
+                if "navidad" in album["name"].lower():
+                    logging.info(f"Skipping Christmas album - {album['name']}")
                     continue
                 album_id = album["id"]
                 if album_id not in searched_ids:
@@ -340,7 +344,7 @@ class ReleaseRadar:
 
         # Save new tracks to CSV
         self.playlist_csv = Path.cwd() / f"{self.playlist_name}.csv"
-        with open(self.playlist_csv, "w", newline="", encoding="latin-1") as f:
+        with open(self.playlist_csv, "w", newline="", encoding="utf-8") as f:
             dict_writer = csv.DictWriter(f, self.track_list[0].keys())
             dict_writer.writeheader()
             dict_writer.writerows(self.track_list)
