@@ -75,7 +75,14 @@ from tqdm import tqdm
         exists=True, file_okay=True, dir_okay=False, resolve_path=True, path_type=Path
     ),
 )
-def main(spotify_client, genre, days, tracks, artists):
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Do not update the playlist. CSV files will be created.",
+    default=False,
+    show_default=True,
+)
+def main(spotify_client, genre, days, tracks, artists, dry_run):
     """
     Find tracks from artists in a specified genre released within the last n days.
     A CSV file containing a list tracks or artists can be provided to bypass the respective search.
@@ -116,7 +123,8 @@ def main(spotify_client, genre, days, tracks, artists):
         logging.info("No new tracks found. Playlist not updated.")
     else:
         rr.update_csv()
-        rr.update_playlist()
+        if not dry_run:
+            rr.update_playlist()
 
 
 class ReleaseRadar:
