@@ -100,6 +100,10 @@ def main(spotify_client, genre, days, tracks, artists, dry_run):
         level=logging.INFO,
     )
 
+    if dry_run:
+        logging.info("Dry run. Playlist will not be updated.")
+        print("Dry run. Playlist will not be updated.")
+
     # Initialize Spotipy object and client
     rr = ReleaseRadar(spotify_client, genre, days, tracks, artists)
     rr.initialize_spotipy_client()
@@ -330,10 +334,16 @@ class ReleaseRadar:
                             new_tracks.append(song_dict)
                         logging.info(f"Added {len(tracks)} tracks to list.")
 
-        new_tracks = sorted(new_tracks, key=lambda x: x["release_date"])
-
         logging.info(f"Search completed. Found {len(new_tracks)} new tracks.")
         print(f"Found {len(new_tracks)} new tracks.")
+
+        if len(new_tracks) > 0:
+            logging.info("Sorting tracks")
+            new_tracks = sorted(
+                new_tracks,
+                key=lambda x: (x["album_type"], x["release_date"]),
+                reverse=True,
+            )
 
         return new_tracks
 
