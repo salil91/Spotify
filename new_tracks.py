@@ -293,7 +293,7 @@ class ReleaseRadar:
                 if album["album_type"] == "compilation":
                     logging.info(f"Skipping compilation album - {album['name']}")
                     continue
-                if "navidad" in album["name"].lower():
+                if "navid" in album["name"].lower():
                     logging.info(f"Skipping Christmas album - {album['name']}")
                     continue
                 album_id = album["id"]
