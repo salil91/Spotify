@@ -1,0 +1,12 @@
+name: spotify
+channels:
+  - conda-forge
+dependencies:
+  - spotipy
+  - click
+  - ipykernel
+  - pyyaml
+  - ca-certificates
+  - certifi
+  - openssl
+  - tqdm
