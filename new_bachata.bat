@@ -18,7 +18,7 @@ if %ENVNAME%==base (set ENVPATH=%MAMBAPATH%) else (set ENVPATH=%MAMBAPATH%\envs\
 call %MAMBAPATH%\Scripts\activate.bat %ENVPATH%
 
 :: Run the python script 
-python new_tracks.py -s %SPOTIFY_YAML% -g %GENRE% -d %DAYS% -a %ARTISTS_LIST%
+python new_tracks.py -s %SPOTIFY_YAML% -g %GENRE% -a %ARTISTS_LIST% -d %DAYS%
 pause
 
 :: Deactivate the environment
