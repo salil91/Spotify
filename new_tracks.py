@@ -392,10 +392,11 @@ class ReleaseRadar:
             description=f"Automated playlist created with Spotipy.",
         )
         logging.info(f"Spotify playlist updated: {self.playlist_name}")
+        print(f"Spotify playlist updated: {self.playlist_name}")
 
         self.playlist_url = f"https://open.spotify.com/playlist/{playlist_id}"
         logging.info(f"Playlist URL: {self.playlist_url}")
-        print(f"Playlist: {self.playlist_url}")
+        print(f"Playlist URL: {self.playlist_url}")
 
         return self.playlist_url
 
