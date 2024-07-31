@@ -15,4 +15,4 @@ cd /home/salil.bavdekar/GitHub/Spotify/
 export PATH=/blue/subhash/salil.bavdekar/.conda/envs/spotify/bin/:$PATH
 
 # Run the python script
-python new_tracks.py -s $SPOTIFY_YAML -g $GENRE -a "$ARTISTS_LIST" -d $DAYS
+python new_tracks.py -s $SPOTIFY_YAML -g $GENRE -a "$ARTISTS_LIST" -d $DAYS --no-progress
