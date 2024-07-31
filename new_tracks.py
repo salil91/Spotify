@@ -8,18 +8,26 @@ Usage: new_tracks.py [OPTIONS]
   IDs.
 
 Options:
-  -s, --spotify_client FILE  YAML file with Spotify API client ID, secret, and
-                             redirect URI.  [required]
-  -g, --genre TEXT           Search for artists in this genre. Search is only
-                             performed if tracks/artists CSV file is not
-                             provided/found. Otherwise, it is only used in
-                             naming the playlist.  [required]
-  -d, --days INTEGER         Number of days to search back for new tracks. If
-                             0, search for tracks released after the previous
-                             Friday.  [default: 0]
-  -t, --tracks FILE          CSV file containing track IDs.
-  -a, --artists FILE         CSV file containing artist IDs.
-  --help                     Show this message and exit.
+  -s, --spotify_client FILE       YAML file with Spotify API client ID,
+                                  secret, and redirect URI.  [required]
+  -g, --genre TEXT                Search for artists in this genre. Search is
+                                  only performed if tracks/artists CSV file is
+                                  not provided/found. Otherwise, it is only
+                                  used in naming the playlist.  [required]
+  -d, --days INTEGER              Number of days to search back for new
+                                  tracks. If 0, search for tracks released
+                                  after the previous Friday.  [default: 0]
+  -t, --tracks FILE               CSV file containing track IDs.
+  -a, --artists FILE              CSV file containing artist IDs.
+  -o, --sort-order [ascending|descending]
+                                  Choose the order to sort tracks by release
+                                  date. Singles are always at the top, and
+                                  albums are always at the bottom. 
+                                  [default: ascending]
+  --dry-run                       Do not update the playlist. CSV files will
+                                  be created.
+  --no-progress                   Do not display the progress bar.
+  --help                          Show this message and exit.
 """
 
 import csv
@@ -76,13 +84,26 @@ from tqdm import tqdm
     ),
 )
 @click.option(
+    "--sort-order",
+    "-o",
+    type=click.Choice(["ascending", "descending", "none"], case_sensitive=False),
+    default="ascending",
+    show_default=True,
+    help="Choose the order to sort tracks by release date. Singles are always at the top, and albums are always at the bottom.",
+)
+@click.option(
     "--dry-run",
     is_flag=True,
     help="Do not update the playlist. CSV files will be created.",
     default=False,
-    show_default=True,
 )
-def main(spotify_client, genre, days, tracks, artists, dry_run):
+@click.option(
+    "--no-progress",
+    is_flag=True,
+    help="Do not display the progress bar.",
+    default=False,
+)
+def main(spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_progress):
     """
     Find tracks from artists in a specified genre released within the last n days.
     A CSV file containing a list tracks or artists can be provided to bypass the respective search.
@@ -103,9 +124,9 @@ def main(spotify_client, genre, days, tracks, artists, dry_run):
     if dry_run:
         logging.info("Dry run. Playlist will not be updated.")
         print("Dry run. Playlist will not be updated.")
-
+    
     # Initialize Spotipy object and client
-    rr = ReleaseRadar(spotify_client, genre, days, tracks, artists)
+    rr = ReleaseRadar(spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_progress)
     rr.initialize_spotipy_client()
 
     # Load tracks
@@ -114,20 +135,21 @@ def main(spotify_client, genre, days, tracks, artists, dry_run):
             logging.info(f"Reading list of tracks from {tracks.resolve()}")
             with open(tracks, "r") as f:
                 reader = csv.reader(f)
-                rr.track_list = list(reader)
-            logging.info(f"Done. {len(rr.track_list)} in list.")
+                new_tracks = list(reader)
+            logging.info(f"Done. {len(new_tracks)} in list.")
         except FileNotFoundError:
             logging.error("Error reading tracks file!")
-            rr.track_list = rr.get_new_tracks()
+            new_tracks = rr.get_new_tracks()
     else:
-        rr.track_list = rr.get_new_tracks()
-
+        new_tracks = rr.get_new_tracks()
+    rr.track_list = rr.sort_tracks(new_tracks)
+    
     # Update CSV and playlist
     if len(rr.track_list) == 0:
         logging.info("No new tracks found. Playlist not updated.")
     else:
         rr.update_csv()
-        if not dry_run:
+        if not rr.dry_run:
             rr.update_playlist()
 
 
@@ -136,12 +158,15 @@ class ReleaseRadar:
     A playlist generator for new tracks from artists in a specified genre or from a list of tracks/artists.
     """
 
-    def __init__(self, spotify_yaml, genre, days=0, tracks=None, artists=None):
+    def __init__(self, spotify_yaml, genre, days=0, tracks=None, artists=None, sort_order="ascending", dry_run=False, no_progress=False):
         self.spotify_yaml = spotify_yaml
         self.genre = genre.title()
         self.days = days
         self.tracks = tracks
         self.artists = artists
+        self.sort_order = sort_order
+        self.dry_run = dry_run
+        self.no_progress = no_progress
 
     def initialize_spotipy_client(self):
         """
@@ -267,8 +292,11 @@ class ReleaseRadar:
 
         batch_size = 50
         new_tracks, searched_ids, added_ids = [], [], []
+        #TODO: See if tqdm can be turned off with an argument
         for idx, artist in tqdm(
-            enumerate(self.artist_list, start=1), total=len(self.artist_list)
+            enumerate(self.artist_list, start=1),
+            total=len(self.artist_list),
+            disable=self.no_progress,
         ):
             logging.info(
                 f"Searching artist {idx} / {len(self.artist_list)} - {artist['name']}"
@@ -337,15 +365,36 @@ class ReleaseRadar:
         logging.info(f"Search completed. Found {len(new_tracks)} new tracks.")
         print(f"Found {len(new_tracks)} new tracks.")
 
-        if len(new_tracks) > 0:
-            logging.info("Sorting tracks")
-            new_tracks = sorted(
-                new_tracks,
+        return new_tracks
+        
+    def sort_tracks(self, tracks="ascending"):
+        """
+        Sort the tracks by release date using the provided order. In addition, all singles are placed at the top, and all albums are placed at the bottom.
+        """
+        if self.sort_order.lower() == "ascending":
+            logging.info("Sorting tracks. Most recently released tracks will be at the bottom of the playlist.")
+            sorted_tracks = sorted(
+                tracks,
+                key=lambda x: x["release_date"],
+                reverse=False,
+            )
+            sorted_tracks = sorted(
+                sorted_tracks,
+                key=lambda x: x["album_type"],
+                reverse=True,
+            )
+        elif self.sort_order.lower() == "descending":
+            logging.info("Sorting tracks. Most recently released tracks will be at the top of the playlist.")
+            sorted_tracks = sorted(
+                tracks,
                 key=lambda x: (x["album_type"], x["release_date"]),
                 reverse=True,
             )
-
-        return new_tracks
+        
+        else:
+            logging.warning(f"Sorting order - {self.sort_order} - is not 'ascending' or 'descending'. Tracks will not be sorted.")
+                
+        return sorted_tracks
 
     def update_csv(self):
         """
@@ -358,7 +407,7 @@ class ReleaseRadar:
         old_playlists = Path.cwd().glob(f"New {self.genre} from*")
         for old_playlist in old_playlists:
             old_playlist.unlink()
-            logging.info(f"Deleted old playlist: {old_playlist.resolve()}")
+            logging.info(f"Deleted old track list: {old_playlist.resolve()}")
 
         # Save new tracks to CSV
         self.playlist_csv = Path.cwd() / f"{self.playlist_name}.csv"
