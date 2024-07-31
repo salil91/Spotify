@@ -103,7 +103,9 @@ from tqdm import tqdm
     help="Do not display the progress bar.",
     default=False,
 )
-def main(spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_progress):
+def main(
+    spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_progress
+):
     """
     Find tracks from artists in a specified genre released within the last n days.
     A CSV file containing a list tracks or artists can be provided to bypass the respective search.
@@ -124,9 +126,11 @@ def main(spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_p
     if dry_run:
         logging.info("Dry run. Playlist will not be updated.")
         print("Dry run. Playlist will not be updated.")
-    
+
     # Initialize Spotipy object and client
-    rr = ReleaseRadar(spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_progress)
+    rr = ReleaseRadar(
+        spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_progress
+    )
     rr.initialize_spotipy_client()
 
     # Load tracks
@@ -143,7 +147,7 @@ def main(spotify_client, genre, days, tracks, artists, sort_order, dry_run, no_p
     else:
         new_tracks = rr.get_new_tracks()
     rr.track_list = rr.sort_tracks(new_tracks)
-    
+
     # Update CSV and playlist
     if len(rr.track_list) == 0:
         logging.info("No new tracks found. Playlist not updated.")
@@ -158,7 +162,17 @@ class ReleaseRadar:
     A playlist generator for new tracks from artists in a specified genre or from a list of tracks/artists.
     """
 
-    def __init__(self, spotify_yaml, genre, days=0, tracks=None, artists=None, sort_order="ascending", dry_run=False, no_progress=False):
+    def __init__(
+        self,
+        spotify_yaml,
+        genre,
+        days=0,
+        tracks=None,
+        artists=None,
+        sort_order="ascending",
+        dry_run=False,
+        no_progress=False,
+    ):
         self.spotify_yaml = spotify_yaml
         self.genre = genre.title()
         self.days = days
@@ -292,7 +306,7 @@ class ReleaseRadar:
 
         batch_size = 50
         new_tracks, searched_ids, added_ids = [], [], []
-        #TODO: See if tqdm can be turned off with an argument
+        # TODO: See if tqdm can be turned off with an argument
         for idx, artist in tqdm(
             enumerate(self.artist_list, start=1),
             total=len(self.artist_list),
@@ -351,7 +365,7 @@ class ReleaseRadar:
                             if track_id not in added_ids:
                                 added_ids.append(track_id)
                             song_dict = {
-                                "song": track["name"].replace('"', ""),
+                                "title": track["name"].replace('"', ""),
                                 "artist": track["artists"][0]["name"].replace('"', ""),
                                 "album": album["name"].replace('"', ""),
                                 "album_type": album["album_type"],
@@ -366,34 +380,38 @@ class ReleaseRadar:
         print(f"Found {len(new_tracks)} new tracks.")
 
         return new_tracks
-        
+
     def sort_tracks(self, tracks="ascending"):
         """
         Sort the tracks by release date using the provided order. In addition, all singles are placed at the top, and all albums are placed at the bottom.
         """
         if self.sort_order.lower() == "ascending":
-            logging.info("Sorting tracks. Most recently released tracks will be at the bottom of the playlist.")
-            sorted_tracks = sorted(
-                tracks,
-                key=lambda x: x["release_date"],
-                reverse=False,
+            logging.info(
+                "Sorting tracks. Most recently released tracks will be at the bottom of the playlist."
             )
-            sorted_tracks = sorted(
-                sorted_tracks,
-                key=lambda x: x["album_type"],
-                reverse=True,
-            )
+            sort_reverse = False
         elif self.sort_order.lower() == "descending":
-            logging.info("Sorting tracks. Most recently released tracks will be at the top of the playlist.")
-            sorted_tracks = sorted(
-                tracks,
-                key=lambda x: (x["album_type"], x["release_date"]),
-                reverse=True,
+            logging.info(
+                "Sorting tracks. Most recently released tracks will be at the top of the playlist."
             )
-        
+            sort_reverse = True
         else:
-            logging.warning(f"Sorting order - {self.sort_order} - is not 'ascending' or 'descending'. Tracks will not be sorted.")
-                
+            logging.warning(
+                f"Sorting order - {self.sort_order} - is not 'ascending' or 'descending'. Tracks will not be sorted."
+            )
+            return tracks
+
+        sorted_tracks = sorted(
+            tracks,
+            key=lambda x: (x["release_date"], x["title"].lower()),
+            reverse=sort_reverse,
+        )
+        sorted_tracks = sorted(
+            sorted_tracks,
+            key=lambda x: x["album_type"].lower(),
+            reverse=True,
+        )
+
         return sorted_tracks
 
     def update_csv(self):
