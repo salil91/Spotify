@@ -2,6 +2,7 @@
 
 # Define the parameters for the search
 DAYS=7
+ORDER=descending
 ARTISTS_LIST="Bachata Artists (Manual).csv"
 GENRE=bachata  # only used to name the playlist, since artist list is given
 
@@ -15,4 +16,4 @@ cd /home/$USER/GitHub/Spotify/
 export PATH=/blue/subhash/salil.bavdekar/.conda/envs/spotify/bin/:$PATH
 
 # Run the python script
-python new_tracks.py -s $SPOTIFY_YAML -g $GENRE -a "$ARTISTS_LIST" -d $DAYS --no-progress
+python new_tracks.py -s $SPOTIFY_YAML -g $GENRE -a "$ARTISTS_LIST" -d $DAYS -o $ORDER --no-progress

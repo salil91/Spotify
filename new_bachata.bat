@@ -2,7 +2,8 @@
 
 :: Define the parameters for the search
 set DAYS=7
-set ARTISTS_LIST="Bachata Artists (Manual).csv"
+ser ORDER=descending
+et ARTISTS_LIST="Bachata Artists (Manual).csv"
 set GENRE=bachata  &:: only used to name the playlist, since artist list is given
 
 :: Define the path to the yaml file with the spotify API parameters
@@ -21,7 +22,8 @@ if %ENVNAME%==base (set ENVPATH=%MAMBAPATH%) else (set ENVPATH=%MAMBAPATH%\envs\
 call %MAMBAPATH%\Scripts\activate.bat %ENVPATH%
 
 :: Run the python script 
-python new_tracks.py -s %SPOTIFY_YAML% -g %GENRE% -a %ARTISTS_LIST% -d %DAYS%
+python new_tracks.py -s %SPOTIFY_YAML% -g %GENRE% -a %ARTISTS_LIST% -o $ORDER -d 
+%DAYS%
 pause
 
 :: Deactivate the environment
