@@ -23,7 +23,7 @@ Options:
                                   Choose the order to sort tracks by release
                                   date. Singles are always at the top, and
                                   albums are always at the bottom. 
-                                  [default: ascending]
+                                  [default: descending]
   --dry-run                       Do not update the playlist. CSV files will
                                   be created.
   --no-progress                   Do not display the progress bar.
@@ -87,7 +87,7 @@ from tqdm import tqdm
     "--sort-order",
     "-o",
     type=click.Choice(["ascending", "descending", "none"], case_sensitive=False),
-    default="ascending",
+    default="descending",
     show_default=True,
     help="Choose the order to sort tracks by release date. Singles are always at the top, and albums are always at the bottom.",
 )
