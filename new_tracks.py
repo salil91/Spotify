@@ -403,7 +403,7 @@ class ReleaseRadar:
 
         sorted_tracks = sorted(
             tracks,
-            key=lambda x: (x["release_date"], x["title"].lower()),
+            key=lambda x: (x["release_date"], x["artist"].lower()),
             reverse=sort_reverse,
         )
         sorted_tracks = sorted(
